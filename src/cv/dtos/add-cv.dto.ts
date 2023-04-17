@@ -1,5 +1,6 @@
 import {IsNotEmpty,IsNumber, IsOptional, IsString} from 'class-validator'
-export class AddCvDto{
+import { CvEntity } from '../entities/cv.entity';
+export class AddCvDto {
     @IsNotEmpty()
     @IsString()
     name:string;

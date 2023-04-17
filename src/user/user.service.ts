@@ -4,41 +4,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { GenericService } from '../generics/generics.service';
 
 @Injectable()
-export class UserService {
+export class UserService extends GenericService<UserEntity,CreateUserDto,UpdateUserDto> {
   constructor(@InjectRepository(UserEntity)
-  private userRepository :Repository<UserEntity>){}
-  async create(createUserDto: CreateUserDto):Promise<UserEntity> {
-    
-    return await this.userRepository.save(createUserDto);
+    private readonly userRepository: Repository<UserEntity>) {
+    super(userRepository);
   }
 
-  async findAll() :Promise<UserEntity[]>{
-    return await this.userRepository.find();
-  }
-
-  async findOne(id: number):Promise<UserEntity> {
-const user=await this.userRepository.findOne({where:{id}});
-if(!user){
-throw new NotFoundException("le user d'id ${id} n'existe pas")
-}
-return user;
-  }
-
-  async update(id: number, updateUserDto: UpdateUserDto):Promise<UserEntity> {
-    const user=await this.userRepository.preload({
-      id,
-      ...updateUserDto
-    })
-    if(!user){
-      throw new NotFoundException("le user d'id ${id} n'existe pas")
-    }
-    return await this.userRepository.save(user);
-  }
-
- async remove(id: number):Promise<UserEntity> {
-    const user=await this.findOne(id);
-    return await this.userRepository.remove(user);
-  }
 }
